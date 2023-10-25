@@ -1,0 +1,18 @@
+mode: set
+git.garena.com/sea-labs-id/batch-04/shared-projects/go-parking-lot/entity/ticket.go:18.25,24.2 3 1
+git.garena.com/sea-labs-id/batch-04/shared-projects/go-parking-lot/parking/lot.go:13.27,16.2 2 1
+git.garena.com/sea-labs-id/batch-04/shared-projects/go-parking-lot/parking/lot.go:18.70,19.27 1 1
+git.garena.com/sea-labs-id/batch-04/shared-projects/go-parking-lot/parking/lot.go:23.2,23.27 1 1
+git.garena.com/sea-labs-id/batch-04/shared-projects/go-parking-lot/parking/lot.go:27.2,29.20 3 1
+git.garena.com/sea-labs-id/batch-04/shared-projects/go-parking-lot/parking/lot.go:19.27,22.3 2 1
+git.garena.com/sea-labs-id/batch-04/shared-projects/go-parking-lot/parking/lot.go:23.27,26.3 2 1
+git.garena.com/sea-labs-id/batch-04/shared-projects/go-parking-lot/parking/lot.go:32.72,34.9 2 1
+git.garena.com/sea-labs-id/batch-04/shared-projects/go-parking-lot/parking/lot.go:38.2,39.8 2 1
+git.garena.com/sea-labs-id/batch-04/shared-projects/go-parking-lot/parking/lot.go:34.9,37.3 2 1
+git.garena.com/sea-labs-id/batch-04/shared-projects/go-parking-lot/parking/lot.go:42.51,43.37 1 1
+git.garena.com/sea-labs-id/batch-04/shared-projects/go-parking-lot/parking/lot.go:48.2,48.14 1 1
+git.garena.com/sea-labs-id/batch-04/shared-projects/go-parking-lot/parking/lot.go:43.37,44.48 1 1
+git.garena.com/sea-labs-id/batch-04/shared-projects/go-parking-lot/parking/lot.go:44.48,46.4 1 1
+git.garena.com/sea-labs-id/batch-04/shared-projects/go-parking-lot/parking/attendance.go:11.40,13.2 1 1
+git.garena.com/sea-labs-id/batch-04/shared-projects/go-parking-lot/parking/attendance.go:15.65,17.2 1 1
+git.garena.com/sea-labs-id/batch-04/shared-projects/go-parking-lot/parking/attendance.go:19.70,21.2 1 1
