@@ -19,6 +19,8 @@ func TestPark(t *testing.T) {
 		assert.NotNil(t, ticket)	
 	})
 
+
+
 	t.Run("should return ErrNoAvailablePosition when parking lot full", func(t *testing.T) {
 		car1 := entity.Car{PlateNumber: "GOLANG"}
 		car2 := entity.Car{PlateNumber: "RUBY"}
