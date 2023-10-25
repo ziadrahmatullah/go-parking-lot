@@ -29,6 +29,7 @@ func main() {
 		case "1":
 			capacities := promptInput(scanner, "input parking lot capacities: ")
 			fmt.Println("menu 1 selected: ", capacities)
+			
 		case "4":
 			exit = true
 		default:
