@@ -21,7 +21,6 @@ func main() {
 	lot1 := parking.NewLot(1)
 	lots = append(lots, lot1)
 	attendant := parking.NewAttendance(lots, 2)
-	lot1.Subscribe(attendant)
 	attendant.Park(*car)
 
 	// scanner := bufio.NewScanner(os.Stdin)

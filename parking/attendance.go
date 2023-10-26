@@ -1,25 +1,25 @@
 package parking
 
 import (
-	"fmt"
-
 	"git.garena.com/sea-labs-id/batch-04/shared-projects/go-parking-lot/constant"
 	"git.garena.com/sea-labs-id/batch-04/shared-projects/go-parking-lot/entity"
 )
 
-
-
-type Attendance struct{
-	lot []*Lot
+type Attendance struct {
+	lot    []*Lot
 	capLot int
 }
 
-func NewAttendance(lot []*Lot, cap int) *Attendance{
-	return &Attendance{lot, cap}
+func NewAttendance(lot []*Lot, cap int) *Attendance {
+	newAttendance := &Attendance{lot, cap}
+	for _, lt := range lot {
+		lt.Subscribe(newAttendance)
+	}
+	return newAttendance
 }
 
-func (a *Attendance) Park(car entity.Car) (ticket entity.Ticket,err error){
-	if a.isCarAvailable(car){
+func (a *Attendance) Park(car entity.Car) (ticket entity.Ticket, err error) {
+	if a.isCarAvailable(car) {
 		err = constant.ErrCarHasBeenParked
 		return
 	}
@@ -29,22 +29,22 @@ func (a *Attendance) Park(car entity.Car) (ticket entity.Ticket,err error){
 		}
 	}
 	err = constant.ErrNoAvailablePosition
-	return 
+	return
 }
 
-func (a *Attendance) Unpark(ticket entity.Ticket) (car entity.Car,err error){
+func (a *Attendance) Unpark(ticket entity.Ticket) (car entity.Car, err error) {
 	for _, lt := range a.lot {
-		if _, ok := lt.field[ticket]; ok{
+		if _, ok := lt.field[ticket]; ok {
 			return lt.Unpark(ticket)
 		}
 	}
 	err = constant.ErrUnrecognizedParkingTicket
-	return 
+	return
 }
 
-func (a *Attendance) isCarAvailable(car entity.Car) bool{
-	for _, lt := range a.lot{
-		if lt.isCarAvailable(car){
+func (a *Attendance) isCarAvailable(car entity.Car) bool {
+	for _, lt := range a.lot {
+		if lt.isCarAvailable(car) {
 			return true
 		}
 	}
@@ -52,5 +52,4 @@ func (a *Attendance) isCarAvailable(car entity.Car) bool{
 }
 
 func (a *Attendance) Notify(lot *Lot) {
-	fmt.Println("lot penuh:", lot)
 }
