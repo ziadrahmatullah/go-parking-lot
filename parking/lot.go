@@ -1,11 +1,14 @@
 package parking
 
 import (
+	"fmt"
+
 	"git.garena.com/sea-labs-id/batch-04/shared-projects/go-parking-lot/constant"
 	"git.garena.com/sea-labs-id/batch-04/shared-projects/go-parking-lot/entity"
 )
 
 type Lot struct {
+	subscriberList []Subscriber
 	field map[entity.Ticket]entity.Car
 	cap   int
 }
@@ -26,6 +29,12 @@ func (l *Lot) Park(car entity.Car) (ticket entity.Ticket, err error) {
 	}
 	ticket = entity.NewTicket()
 	l.field[ticket] = car
+
+	fmt.Println(len(l.field) == l.cap)
+	if len(l.field) == l.cap {
+		l.notifyAll()
+	}
+
 	return ticket, nil
 }
 
@@ -50,4 +59,15 @@ func (l *Lot) isCarAvailable(car entity.Car) bool {
 
 func (l *Lot) isLotFull()bool{
 	return len(l.field) == l.cap
+}
+
+func (l *Lot) notifyAll() {
+	for _, subscriber := range l.subscriberList {
+		fmt.Println("Notify to ", subscriber)
+		subscriber.Notify(l)
+	}
+}
+
+func (l *Lot) Subscribe(s Subscriber) {
+	l.subscriberList = append(l.subscriberList, s)
 }

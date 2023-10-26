@@ -3,10 +3,10 @@ package main
 import (
 	"bufio"
 	"fmt"
-	"os"
 
 	"git.garena.com/sea-labs-id/batch-04/shared-projects/go-parking-lot/entity"
 	"git.garena.com/sea-labs-id/batch-04/shared-projects/go-parking-lot/parking"
+	// "os"
 )
 
 func promptInput(scanner *bufio.Scanner, text string) string {
@@ -16,31 +16,34 @@ func promptInput(scanner *bufio.Scanner, text string) string {
 }
 
 func main() {
-	scanner := bufio.NewScanner(os.Stdin)
-	exit := false
-	menu := "Parking Lot\n" +
-		"1. Setup\n" +
-		"2. Park\n" +
-		"3. Un Park\n" +
-		"4. Exit"
+	var lots []*parking.Lot
+	car := entity.NewCar("123")
+	lot1 := parking.NewLot(1)
+	lots = append(lots, lot1)
+	attendant := parking.NewAttendance(lots, 2)
+	lot1.Subscribe(attendant)
+	attendant.Park(*car)
 
-	for !exit {
-		fmt.Println(menu)
-		input := promptInput(scanner, "input menu: ")
+	// scanner := bufio.NewScanner(os.Stdin)
+	// exit := false
+	// menu := "Parking Lot\n" +
+	// 	"1. Setup\n" +
+	// 	"2. Park\n" +
+	// 	"3. Un Park\n" +
+	// 	"4. Exit"
 
-		p := parking.NewLot(2)
+	// for !exit {
+	// 	fmt.Println(menu)
+	// 	input := promptInput(scanner, "input menu: ")
 
-		switch input {
-		case "1":
-			capacities := promptInput(scanner, "input parking lot capacities: ")
-			fmt.Println("menu 1 selected: ", capacities)
-		case "2":
-			ticket , err := p.Park(entity.Car{PlateNumber: "GOLANG"})
-			fmt.Print(ticket, err)
-		case "4":
-			exit = true
-		default:
-			fmt.Println("invalid menu")
-		}
-	}
+	// 	switch input {
+	// 	case "1":
+	// 		capacities := promptInput(scanner, "input parking lot capacities: ")
+	// 		fmt.Println("menu 1 selected: ", capacities)
+	// 	case "4":
+	// 		exit = true
+	// 	default:
+	// 		fmt.Println("invalid menu")
+	// 	}
+	// }
 }

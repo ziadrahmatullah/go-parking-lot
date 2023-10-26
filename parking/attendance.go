@@ -1,20 +1,21 @@
 package parking
 
 import (
+	"fmt"
 
-	"git.garena.com/sea-labs-id/batch-04/shared-projects/go-parking-lot/entity"
 	"git.garena.com/sea-labs-id/batch-04/shared-projects/go-parking-lot/constant"
+	"git.garena.com/sea-labs-id/batch-04/shared-projects/go-parking-lot/entity"
 )
 
 
 
 type Attendance struct{
-	lot []Lot
+	lot []*Lot
 	capLot int
 }
 
-func NewAttendance(lot []Lot, cap int) *Attendance{
-	return &Attendance{lot, 2}
+func NewAttendance(lot []*Lot, cap int) *Attendance{
+	return &Attendance{lot, cap}
 }
 
 func (a *Attendance) Park(car entity.Car) (ticket entity.Ticket,err error){
@@ -48,4 +49,8 @@ func (a *Attendance) isCarAvailable(car entity.Car) bool{
 		}
 	}
 	return false
+}
+
+func (a *Attendance) Notify(lot *Lot) {
+	fmt.Println("lot penuh:", lot)
 }
