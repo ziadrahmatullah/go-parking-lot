@@ -47,3 +47,7 @@ func (l *Lot) isCarAvailable(car entity.Car) bool {
 	}
 	return false
 }
+
+func (l *Lot) isLotFull()bool{
+	return len(l.field) == l.cap
+}
