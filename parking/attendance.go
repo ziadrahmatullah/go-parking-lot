@@ -18,11 +18,11 @@ func NewAttendance(lot []Lot, cap int) *Attendance{
 }
 
 func (a *Attendance) Park(car entity.Car) (ticket entity.Ticket,err error){
+	if a.isCarAvailable(car){
+		err = constant.ErrCarHasBeenParked
+		return
+	}
 	for _, lt := range a.lot {
-		if lt.isCarAvailable(car){
-			err = constant.ErrCarHasBeenParked
-			return
-		}
 		if !lt.isLotFull() {
 			return lt.Park(car)
 		}
@@ -39,4 +39,13 @@ func (a *Attendance) Unpark(ticket entity.Ticket) (car entity.Car,err error){
 	}
 	err = constant.ErrUnrecognizedParkingTicket
 	return 
+}
+
+func (a *Attendance) isCarAvailable(car entity.Car) bool{
+	for _, lt := range a.lot{
+		if lt.isCarAvailable(car){
+			return true
+		}
+	}
+	return false
 }
