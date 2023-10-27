@@ -73,6 +73,10 @@ func (l *Lot) notifierAvailable() {
 	}
 }
 
+func (l *Lot) numberOfFreeSpace()int{
+	return l.cap - len(l.field)
+}
+
 func (l *Lot) Subscribe(s Subscriber) {
 	l.subscriberList = append(l.subscriberList, s)
 }

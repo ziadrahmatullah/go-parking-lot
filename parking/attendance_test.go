@@ -73,6 +73,25 @@ func TestAttendancePark(t *testing.T) {
 
 		assert.ErrorIs(t,expected,err)	
 	})
+
+	t.Run("should return car from parkinglot2 when park with attendance", func(t *testing.T) {
+		car1 := entity.NewCar("GOLANG")
+
+		var lots []*parking.Lot
+		parkingLot1 := parking.NewLot(2)
+		parkingLot2 := parking.NewLot(4)
+		parkingLot3 := parking.NewLot(3)
+		lots = append(lots, parkingLot1)
+		lots = append(lots, parkingLot2)
+		lots = append(lots, parkingLot3)
+		attendance := parking.NewAttendance(lots, 3)
+		attendance.HighestCapacityStyle()
+		ticket, _ := attendance.Park(*car1)
+
+		car, _ := parkingLot2.Unpark(ticket)
+
+		assert.Equal(t,car1,&car)	
+	})
 }
 
 func TestAttendanceUnpark(t *testing.T) {
@@ -120,3 +139,4 @@ func TestAttendanceUnpark(t *testing.T) {
 		assert.ErrorIs(t,expected,err)	
 	})
 }
+

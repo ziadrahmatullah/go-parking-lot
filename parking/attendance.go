@@ -1,6 +1,8 @@
 package parking
 
 import (
+	"sort"
+
 	"git.garena.com/sea-labs-id/batch-04/shared-projects/go-parking-lot/constant"
 	"git.garena.com/sea-labs-id/batch-04/shared-projects/go-parking-lot/entity"
 )
@@ -21,12 +23,11 @@ func NewAttendance(lot []*Lot, cap int) *Attendance {
 
 func (a *Attendance) Park(car entity.Car) (ticket entity.Ticket, err error) {
 	// TODO: make is availablelot empty for error below
-	
 	if a.isCarAvailable(car) {
 		err = constant.ErrCarHasBeenParked
 		return
 	}
-	for _, lt := range a.availableLot{
+	for _, lt := range a.lot{
 		return lt.Park(car)
 	}
 	err = constant.ErrNoAvailablePosition
@@ -63,6 +64,12 @@ func (a *Attendance) NotifyFull(lot *Lot) {
 
 func (a *Attendance) NotifyAvailable(lot *Lot) {
 	a.availableLot = append(a.availableLot, lot)
+}
+
+func (a *Attendance) HighestCapacityStyle(){
+	sort.Slice(a.availableLot, func(i, j int) bool {
+		return a.availableLot[i].cap > a.availableLot[j].cap
+	})
 }
 
 func deleteElement(slice []*Lot, index int) []*Lot {
