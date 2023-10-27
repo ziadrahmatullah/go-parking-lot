@@ -6,7 +6,7 @@ import (
 )
 
 type Lot struct {
-	subscriberList []*Subscriber
+	subscriberList []Subscriber
 	field          map[entity.Ticket]entity.Car
 	cap            int
 }
@@ -29,8 +29,7 @@ func (l *Lot) Park(car entity.Car) (ticket entity.Ticket, err error) {
 	l.field[ticket] = car
 
 	if len(l.field) == l.cap {
-
-		l.notifyAll()
+		l.notifierFull()
 	}
 
 	return ticket, nil
@@ -41,6 +40,9 @@ func (l *Lot) Unpark(ticket entity.Ticket) (car entity.Car, err error) {
 	if !ok {
 		err = constant.ErrUnrecognizedParkingTicket
 		return
+	}
+	if l.isLotFull(){
+		l.notifierAvailable()
 	}
 	delete(l.field, ticket)
 	return
@@ -59,13 +61,18 @@ func (l *Lot) isLotFull() bool {
 	return len(l.field) == l.cap
 }
 
-func (l *Lot) notifyAll() {
+func (l *Lot) notifierFull() {
 	for _, subscriber := range l.subscriberList {
-		// fmt.Println("Notify to ", subscriber)
-		(*subscriber).Notify(l)
+		subscriber.NotifyFull(l)
+	}
+}
+
+func (l *Lot) notifierAvailable() {
+	for _, subscriber := range l.subscriberList {
+		subscriber.NotifyAvailable(l)
 	}
 }
 
 func (l *Lot) Subscribe(s Subscriber) {
-	l.subscriberList = append(l.subscriberList, &s)
+	l.subscriberList = append(l.subscriberList, s)
 }

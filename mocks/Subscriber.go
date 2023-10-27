@@ -12,8 +12,13 @@ type Subscriber struct {
 	mock.Mock
 }
 
-// Notify provides a mock function with given fields: lot
-func (_m *Subscriber) Notify(lot *parking.Lot) {
+// NotifyAvailable provides a mock function with given fields: lot
+func (_m *Subscriber) NotifyAvailable(lot *parking.Lot) {
+	_m.Called(lot)
+}
+
+// NotifyFull provides a mock function with given fields: lot
+func (_m *Subscriber) NotifyFull(lot *parking.Lot) {
 	_m.Called(lot)
 }
 
