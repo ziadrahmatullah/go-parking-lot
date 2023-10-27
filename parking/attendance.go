@@ -88,13 +88,13 @@ func (a *Attendance) NotifyAvailable(lot *Lot) {
 
 func (a *Attendance) highestCapacityStyle() {
 	sort.Slice(a.availableLot, func(i, j int) bool {
-		return a.availableLot[i].cap > a.availableLot[j].cap
+		return a.availableLot[i].isHigherCapacityThan(a.availableLot[j])
 	})
 }
 
 func (a *Attendance) highestNumberOfFreeSpaceStyle() {
 	sort.Slice(a.availableLot, func(i, j int) bool {
-		return a.availableLot[i].numberOfFreeSpace() > a.availableLot[j].numberOfFreeSpace()
+		return a.availableLot[i].isHigherSpaceThan(a.availableLot[j])
 	})
 }
 

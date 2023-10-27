@@ -77,6 +77,14 @@ func (l *Lot) numberOfFreeSpace() int {
 	return l.cap - len(l.field)
 }
 
+func (l *Lot) isHigherCapacityThan(lot *Lot) bool{
+	return l.cap > lot.cap
+}
+
+func (l *Lot) isHigherSpaceThan(lot *Lot) bool{
+	return l.numberOfFreeSpace() > lot.numberOfFreeSpace()
+}
+
 func (l *Lot) Subscribe(s Subscriber) {
 	l.subscriberList = append(l.subscriberList, s)
 }

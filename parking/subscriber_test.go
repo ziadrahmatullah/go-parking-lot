@@ -6,7 +6,6 @@ import (
 	"git.garena.com/sea-labs-id/batch-04/shared-projects/go-parking-lot/entity"
 	"git.garena.com/sea-labs-id/batch-04/shared-projects/go-parking-lot/mocks"
 	"git.garena.com/sea-labs-id/batch-04/shared-projects/go-parking-lot/parking"
-	// "github.com/stretchr/testify/mock"
 )
 
 func TestNotifyFull(t *testing.T) {
@@ -37,7 +36,6 @@ func TestNotifyAvailable(t *testing.T) {
 		_, _ = l.Park(*c)
 
 		mockSubscriber.AssertNumberOfCalls(t, "NotifyFull", 2)
-		// mockSubscriber.AssertExpectations(t) Untuk semua yang di setup terpanggil
 		mockSubscriber.AssertNumberOfCalls(t, "NotifyAvailable", 1)
 	})
 }
