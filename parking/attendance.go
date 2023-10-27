@@ -21,7 +21,7 @@ type Attendance struct {
 }
 
 func NewAttendance(lot []*Lot, cap int) *Attendance {
-	newAttendance := &Attendance{lot, cap, lot, 0}
+	newAttendance := &Attendance{lot, cap, lot, 1}
 	for _, lt := range lot {
 		lt.Subscribe(newAttendance)
 	}
@@ -30,8 +30,6 @@ func NewAttendance(lot []*Lot, cap int) *Attendance {
 
 func (a *Attendance) ChangeStyle(input int) {
 	switch input {
-	case FirstAvailable:
-		a.parkStyle = FirstAvailable
 	case HighestCapacityStyle:
 		a.parkStyle = HighestCapacityStyle
 	case HighestNumberOfFreeSpaceStyle:
