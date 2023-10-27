@@ -3,9 +3,9 @@ package parking_test
 import (
 	"testing"
 
+	"git.garena.com/sea-labs-id/batch-04/shared-projects/go-parking-lot/constant"
 	"git.garena.com/sea-labs-id/batch-04/shared-projects/go-parking-lot/entity"
 	"git.garena.com/sea-labs-id/batch-04/shared-projects/go-parking-lot/parking"
-	"git.garena.com/sea-labs-id/batch-04/shared-projects/go-parking-lot/constant"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -19,7 +19,7 @@ func TestAttendancePark(t *testing.T) {
 
 		ticket, _ := attendance.Park(car)
 
-		assert.NotNil(t, ticket)	
+		assert.NotNil(t, ticket)
 	})
 
 	t.Run("should return ErrNoAvailablePosition when all parking lot full", func(t *testing.T) {
@@ -38,7 +38,7 @@ func TestAttendancePark(t *testing.T) {
 		attendance.Park(car2)
 		_, err := attendance.Park(car3)
 
-		assert.ErrorIs(t,expected,err)	
+		assert.ErrorIs(t, expected, err)
 	})
 
 	t.Run("should return ErrCarHasBeenParked when input 2 same car", func(t *testing.T) {
@@ -53,7 +53,7 @@ func TestAttendancePark(t *testing.T) {
 		attendance.Park(car1)
 		_, err := attendance.Park(car2)
 
-		assert.ErrorIs(t,expected,err)	
+		assert.ErrorIs(t, expected, err)
 	})
 
 	t.Run("should return ErrCarHasBeenParked when car already in lot 2", func(t *testing.T) {
@@ -71,26 +71,7 @@ func TestAttendancePark(t *testing.T) {
 		attendance.Park(car1)
 		_, err := attendance.Park(car2)
 
-		assert.ErrorIs(t,expected,err)	
-	})
-
-	t.Run("should return car from parkinglot2 when park with attendance", func(t *testing.T) {
-		car1 := entity.NewCar("GOLANG")
-
-		var lots []*parking.Lot
-		parkingLot1 := parking.NewLot(2)
-		parkingLot2 := parking.NewLot(4)
-		parkingLot3 := parking.NewLot(3)
-		lots = append(lots, parkingLot1)
-		lots = append(lots, parkingLot2)
-		lots = append(lots, parkingLot3)
-		attendance := parking.NewAttendance(lots, 3)
-		attendance.HighestCapacityStyle()
-		ticket, _ := attendance.Park(*car1)
-
-		car, _ := parkingLot2.Unpark(ticket)
-
-		assert.Equal(t,car1,&car)	
+		assert.ErrorIs(t, expected, err)
 	})
 }
 
@@ -104,7 +85,7 @@ func TestAttendanceUnpark(t *testing.T) {
 		attendance := parking.NewAttendance(lots, 2)
 		ticket, _ := attendance.Park(expectedCar)
 
-		car ,_:= attendance.Unpark(ticket)
+		car, _ := attendance.Unpark(ticket)
 
 		assert.Equal(t, expectedCar, car)
 	})
@@ -117,11 +98,11 @@ func TestAttendanceUnpark(t *testing.T) {
 		parkingLot := parking.NewLot(1)
 		lots = append(lots, parkingLot)
 		attendance := parking.NewAttendance(lots, 2)
-		
+
 		attendance.Park(car1)
 		_, err := attendance.Unpark(ticket)
 
-		assert.ErrorIs(t,expected,err)	
+		assert.ErrorIs(t, expected, err)
 	})
 
 	t.Run("should return ErrUnrecognizedParkingTicket when input 2 same ticket", func(t *testing.T) {
@@ -136,7 +117,46 @@ func TestAttendanceUnpark(t *testing.T) {
 		attendance.Unpark(ticket)
 		_, err := attendance.Unpark(ticket)
 
-		assert.ErrorIs(t,expected,err)	
+		assert.ErrorIs(t, expected, err)
 	})
 }
 
+func TestChangeStyle(t *testing.T) {
+	t.Run("should return car from HighestCapacityStyle", func(t *testing.T) {
+		car1 := entity.NewCar("GOLANG")
+		var lots []*parking.Lot
+		parkingLot1 := parking.NewLot(2)
+		parkingLot2 := parking.NewLot(4)
+		parkingLot3 := parking.NewLot(3)
+		lots = append(lots, parkingLot1)
+		lots = append(lots, parkingLot2)
+		lots = append(lots, parkingLot3)
+		attendance := parking.NewAttendance(lots, 3)
+		attendance.ChangeStyle(2)
+		ticket, _ := attendance.Park(*car1)
+
+		car, _ := parkingLot2.Unpark(ticket)
+
+		assert.Equal(t, car1, &car)
+	})
+
+	t.Run("should return car from HighestNumberOfFreeSpaceStyle", func(t *testing.T) {
+		car1 := entity.NewCar("GOLANG")
+		car2 := entity.NewCar("CPP")
+		car3 := entity.NewCar("RUBY")
+		var lots []*parking.Lot
+		parkingLot1 := parking.NewLot(2)
+		parkingLot2 := parking.NewLot(3)
+		lots = append(lots, parkingLot1)
+		lots = append(lots, parkingLot2)
+		attendance := parking.NewAttendance(lots, 2)
+		attendance.ChangeStyle(3)
+		attendance.Park(*car1)
+		attendance.Park(*car2)
+		ticket, _ := attendance.Park(*car3)
+
+		carUnpark, _ := parkingLot1.Unpark(ticket)
+
+		assert.Equal(t, car3, &carUnpark)
+	})
+}

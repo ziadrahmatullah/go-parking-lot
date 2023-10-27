@@ -7,31 +7,53 @@ import (
 	"git.garena.com/sea-labs-id/batch-04/shared-projects/go-parking-lot/entity"
 )
 
+const(
+	FirstAvailable int =iota+1
+	HighestCapacityStyle
+	HighestNumberOfFreeSpaceStyle
+)
+
 type Attendance struct {
 	lot    []*Lot
 	capLot int
 	availableLot []*Lot
+	parkStyle int
 }
 
 func NewAttendance(lot []*Lot, cap int) *Attendance {
-	newAttendance := &Attendance{lot, cap, lot}
+	newAttendance := &Attendance{lot, cap, lot, 0}
 	for _, lt := range lot {
 		lt.Subscribe(newAttendance)
 	}
 	return newAttendance
 }
 
+func (a *Attendance) ChangeStyle(input int){
+	switch input{
+	case FirstAvailable:
+		a.parkStyle = FirstAvailable
+	case HighestCapacityStyle:
+		a.parkStyle = HighestCapacityStyle
+	case HighestNumberOfFreeSpaceStyle:
+		a.parkStyle = HighestNumberOfFreeSpaceStyle
+	}
+}
+
 func (a *Attendance) Park(car entity.Car) (ticket entity.Ticket, err error) {
-	// TODO: make is availablelot empty for error below
+	if len(a.availableLot) == 0{
+		err = constant.ErrNoAvailablePosition
+		return 
+	}
 	if a.isCarAvailable(car) {
 		err = constant.ErrCarHasBeenParked
 		return
 	}
-	for _, lt := range a.lot{
-		return lt.Park(car)
+	if a.parkStyle == HighestCapacityStyle{
+		a.highestCapacityStyle()
+	}else if a.parkStyle == HighestNumberOfFreeSpaceStyle{
+		a.highestNumberOfFreeSpaceStyle()
 	}
-	err = constant.ErrNoAvailablePosition
-	return
+	return a.availableLot[0].Park(car)
 }
 
 func (a *Attendance) Unpark(ticket entity.Ticket) (car entity.Car, err error) {
@@ -66,9 +88,15 @@ func (a *Attendance) NotifyAvailable(lot *Lot) {
 	a.availableLot = append(a.availableLot, lot)
 }
 
-func (a *Attendance) HighestCapacityStyle(){
+func (a *Attendance) highestCapacityStyle(){
 	sort.Slice(a.availableLot, func(i, j int) bool {
 		return a.availableLot[i].cap > a.availableLot[j].cap
+	})
+}
+
+func (a *Attendance) highestNumberOfFreeSpaceStyle(){
+	sort.Slice(a.availableLot, func(i, j int) bool {
+		return a.availableLot[i].numberOfFreeSpace() > a.availableLot[j].numberOfFreeSpace()
 	})
 }
 
