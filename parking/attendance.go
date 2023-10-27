@@ -7,17 +7,17 @@ import (
 	"git.garena.com/sea-labs-id/batch-04/shared-projects/go-parking-lot/entity"
 )
 
-const(
-	FirstAvailable int =iota+1
+const (
+	FirstAvailable int = iota + 1
 	HighestCapacityStyle
 	HighestNumberOfFreeSpaceStyle
 )
 
 type Attendance struct {
-	lot    []*Lot
-	capLot int
+	lot          []*Lot
+	capLot       int
 	availableLot []*Lot
-	parkStyle int
+	parkStyle    int
 }
 
 func NewAttendance(lot []*Lot, cap int) *Attendance {
@@ -28,8 +28,8 @@ func NewAttendance(lot []*Lot, cap int) *Attendance {
 	return newAttendance
 }
 
-func (a *Attendance) ChangeStyle(input int){
-	switch input{
+func (a *Attendance) ChangeStyle(input int) {
+	switch input {
 	case FirstAvailable:
 		a.parkStyle = FirstAvailable
 	case HighestCapacityStyle:
@@ -40,17 +40,17 @@ func (a *Attendance) ChangeStyle(input int){
 }
 
 func (a *Attendance) Park(car entity.Car) (ticket entity.Ticket, err error) {
-	if len(a.availableLot) == 0{
+	if len(a.availableLot) == 0 {
 		err = constant.ErrNoAvailablePosition
-		return 
+		return
 	}
 	if a.isCarAvailable(car) {
 		err = constant.ErrCarHasBeenParked
 		return
 	}
-	if a.parkStyle == HighestCapacityStyle{
+	if a.parkStyle == HighestCapacityStyle {
 		a.highestCapacityStyle()
-	}else if a.parkStyle == HighestNumberOfFreeSpaceStyle{
+	} else if a.parkStyle == HighestNumberOfFreeSpaceStyle {
 		a.highestNumberOfFreeSpaceStyle()
 	}
 	return a.availableLot[0].Park(car)
@@ -77,7 +77,7 @@ func (a *Attendance) isCarAvailable(car entity.Car) bool {
 
 func (a *Attendance) NotifyFull(lot *Lot) {
 	for i, lt := range a.availableLot {
-		if lt == lot{
+		if lt == lot {
 			a.availableLot = deleteElement(a.availableLot, i)
 			break
 		}
@@ -88,13 +88,13 @@ func (a *Attendance) NotifyAvailable(lot *Lot) {
 	a.availableLot = append(a.availableLot, lot)
 }
 
-func (a *Attendance) highestCapacityStyle(){
+func (a *Attendance) highestCapacityStyle() {
 	sort.Slice(a.availableLot, func(i, j int) bool {
 		return a.availableLot[i].cap > a.availableLot[j].cap
 	})
 }
 
-func (a *Attendance) highestNumberOfFreeSpaceStyle(){
+func (a *Attendance) highestNumberOfFreeSpaceStyle() {
 	sort.Slice(a.availableLot, func(i, j int) bool {
 		return a.availableLot[i].numberOfFreeSpace() > a.availableLot[j].numberOfFreeSpace()
 	})
@@ -106,4 +106,3 @@ func deleteElement(slice []*Lot, index int) []*Lot {
 
 //TODO: Satuin Notify
 //TODO: Gunakan Iota
-

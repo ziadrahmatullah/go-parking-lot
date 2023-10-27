@@ -41,7 +41,7 @@ func (l *Lot) Unpark(ticket entity.Ticket) (car entity.Car, err error) {
 		err = constant.ErrUnrecognizedParkingTicket
 		return
 	}
-	if l.isLotFull(){
+	if l.isLotFull() {
 		l.notifierAvailable()
 	}
 	delete(l.field, ticket)
@@ -73,7 +73,7 @@ func (l *Lot) notifierAvailable() {
 	}
 }
 
-func (l *Lot) numberOfFreeSpace()int{
+func (l *Lot) numberOfFreeSpace() int {
 	return l.cap - len(l.field)
 }
 
