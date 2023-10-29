@@ -15,13 +15,12 @@ const (
 
 type Attendance struct {
 	lot          []*Lot
-	capLot       int
 	availableLot []*Lot
 	parkStyle    int
 }
 
-func NewAttendance(lot []*Lot, cap int) *Attendance {
-	newAttendance := &Attendance{lot, cap, lot, 1}
+func NewAttendance(lot []*Lot) *Attendance {
+	newAttendance := &Attendance{lot, lot, 1}
 	for _, lt := range lot {
 		lt.Subscribe(newAttendance)
 	}

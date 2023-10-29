@@ -15,7 +15,7 @@ func TestAttendancePark(t *testing.T) {
 		var lots []*parking.Lot
 		parkingLot := parking.NewLot(2)
 		lots = append(lots, parkingLot)
-		attendance := parking.NewAttendance(lots, 2)
+		attendance := parking.NewAttendance(lots)
 
 		ticket, _ := attendance.Park(*car)
 
@@ -32,7 +32,7 @@ func TestAttendancePark(t *testing.T) {
 		parkingLot2 := parking.NewLot(1)
 		lots = append(lots, parkingLot1)
 		lots = append(lots, parkingLot2)
-		attendance := parking.NewAttendance(lots, 2)
+		attendance := parking.NewAttendance(lots)
 
 		attendance.Park(*car1)
 		attendance.Park(*car2)
@@ -48,7 +48,7 @@ func TestAttendancePark(t *testing.T) {
 		var lots []*parking.Lot
 		parkingLot := parking.NewLot(2)
 		lots = append(lots, parkingLot)
-		attendance := parking.NewAttendance(lots, 2)
+		attendance := parking.NewAttendance(lots)
 
 		attendance.Park(*car1)
 		_, err := attendance.Park(*car2)
@@ -65,7 +65,7 @@ func TestAttendancePark(t *testing.T) {
 		parkingLot2 := parking.NewLot(2)
 		lots = append(lots, parkingLot1)
 		lots = append(lots, parkingLot2)
-		attendance := parking.NewAttendance(lots, 2)
+		attendance := parking.NewAttendance(lots)
 
 		parkingLot2.Park(*car1)
 		attendance.Park(*car1)
@@ -81,7 +81,7 @@ func TestAttendanceUnpark(t *testing.T) {
 		var lots []*parking.Lot
 		parkingLot := parking.NewLot(2)
 		lots = append(lots, parkingLot)
-		attendance := parking.NewAttendance(lots, 2)
+		attendance := parking.NewAttendance(lots)
 
 		ticket, _ := attendance.Park(*expectedCar)
 		car, _ := attendance.Unpark(ticket)
@@ -96,7 +96,7 @@ func TestAttendanceUnpark(t *testing.T) {
 		var lots []*parking.Lot
 		parkingLot := parking.NewLot(1)
 		lots = append(lots, parkingLot)
-		attendance := parking.NewAttendance(lots, 2)
+		attendance := parking.NewAttendance(lots)
 
 		attendance.Park(*car1)
 		_, err := attendance.Unpark(ticket)
@@ -110,7 +110,7 @@ func TestAttendanceUnpark(t *testing.T) {
 		var lots []*parking.Lot
 		parkingLot := parking.NewLot(1)
 		lots = append(lots, parkingLot)
-		attendance := parking.NewAttendance(lots, 2)
+		attendance := parking.NewAttendance(lots)
 
 		ticket, _ := attendance.Park(*car1)
 		attendance.Unpark(ticket)
@@ -130,7 +130,7 @@ func TestChangeStyle(t *testing.T) {
 		lots = append(lots, parkingLot1)
 		lots = append(lots, parkingLot2)
 		lots = append(lots, parkingLot3)
-		attendance := parking.NewAttendance(lots, 3)
+		attendance := parking.NewAttendance(lots)
 
 		attendance.ChangeStyle(2)
 		ticket, _ := attendance.Park(*car1)
@@ -148,7 +148,7 @@ func TestChangeStyle(t *testing.T) {
 		parkingLot2 := parking.NewLot(3)
 		lots = append(lots, parkingLot1)
 		lots = append(lots, parkingLot2)
-		attendance := parking.NewAttendance(lots, 2)
+		attendance := parking.NewAttendance(lots)
 
 		attendance.ChangeStyle(3)
 		attendance.Park(*car1)
