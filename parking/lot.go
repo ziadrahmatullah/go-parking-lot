@@ -28,7 +28,7 @@ func (l *Lot) Park(car entity.Car) (ticket entity.Ticket, err error) {
 	ticket = entity.NewTicket()
 	l.field[ticket] = car
 
-	if len(l.field) == l.cap {
+	if l.isLotFull(){
 		l.notifierFull()
 	}
 
@@ -63,13 +63,13 @@ func (l *Lot) isLotFull() bool {
 
 func (l *Lot) notifierFull() {
 	for _, subscriber := range l.subscriberList {
-		subscriber.NotifyFull(l)
+		subscriber.Notify(l, "full")
 	}
 }
 
 func (l *Lot) notifierAvailable() {
 	for _, subscriber := range l.subscriberList {
-		subscriber.NotifyAvailable(l)
+		subscriber.Notify(l, "available")
 	}
 }
 

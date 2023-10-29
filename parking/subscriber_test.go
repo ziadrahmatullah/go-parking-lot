@@ -14,11 +14,11 @@ func TestNotifyFull(t *testing.T) {
 		c := entity.NewCar("GOLANG")
 		mockSubscriber := new(mocks.Subscriber)
 		l.Subscribe(mockSubscriber)
-		mockSubscriber.On("NotifyFull", l)
+		mockSubscriber.On("Notify", l, "full")
 
 		l.Park(*c)
 
-		mockSubscriber.AssertNumberOfCalls(t, "NotifyFull", 1)
+		mockSubscriber.AssertNumberOfCalls(t, "Notify", 1)
 	})
 }
 
@@ -28,14 +28,13 @@ func TestNotifyAvailable(t *testing.T) {
 		c := entity.NewCar("GOLANG")
 		mockSubscriber := new(mocks.Subscriber)
 		l.Subscribe(mockSubscriber)
-		mockSubscriber.On("NotifyFull", l)
-		mockSubscriber.On("NotifyAvailable", l)
+		mockSubscriber.On("Notify", l, "full")
+		mockSubscriber.On("Notify", l, "available")
 
 		ticket, _ := l.Park(*c)
 		l.Unpark(ticket)
 		_, _ = l.Park(*c)
 
-		mockSubscriber.AssertNumberOfCalls(t, "NotifyFull", 2)
-		mockSubscriber.AssertNumberOfCalls(t, "NotifyAvailable", 1)
+		mockSubscriber.AssertNumberOfCalls(t, "Notify", 3)
 	})
 }

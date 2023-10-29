@@ -11,21 +11,21 @@ import (
 
 func TestAttendancePark(t *testing.T) {
 	t.Run("should return not nil when parking car", func(t *testing.T) {
-		car := entity.Car{PlateNumber: "GOLANG"}
+		car := entity.NewCar("GOLANG")
 		var lots []*parking.Lot
 		parkingLot := parking.NewLot(2)
 		lots = append(lots, parkingLot)
 		attendance := parking.NewAttendance(lots, 2)
 
-		ticket, _ := attendance.Park(car)
+		ticket, _ := attendance.Park(*car)
 
 		assert.NotNil(t, ticket)
 	})
 
 	t.Run("should return ErrNoAvailablePosition when all parking lot full", func(t *testing.T) {
-		car1 := entity.Car{PlateNumber: "GOLANG"}
-		car2 := entity.Car{PlateNumber: "RUBY"}
-		car3 := entity.Car{PlateNumber: "CPP"}
+		car1 := entity.NewCar("GOLANG")
+		car2 := entity.NewCar("RUBY")
+		car3 := entity.NewCar("CPP")
 		expected := constant.ErrNoAvailablePosition
 		var lots []*parking.Lot
 		parkingLot1 := parking.NewLot(1)
@@ -34,31 +34,31 @@ func TestAttendancePark(t *testing.T) {
 		lots = append(lots, parkingLot2)
 		attendance := parking.NewAttendance(lots, 2)
 
-		attendance.Park(car1)
-		attendance.Park(car2)
-		_, err := attendance.Park(car3)
+		attendance.Park(*car1)
+		attendance.Park(*car2)
+		_, err := attendance.Park(*car3)
 
 		assert.ErrorIs(t, expected, err)
 	})
 
 	t.Run("should return ErrCarHasBeenParked when input 2 same car", func(t *testing.T) {
-		car1 := entity.Car{PlateNumber: "GOLANG"}
-		car2 := entity.Car{PlateNumber: "GOLANG"}
+		car1 := entity.NewCar("GOLANG")
+		car2 := entity.NewCar("GOLANG")
 		expected := constant.ErrCarHasBeenParked
 		var lots []*parking.Lot
 		parkingLot := parking.NewLot(2)
 		lots = append(lots, parkingLot)
 		attendance := parking.NewAttendance(lots, 2)
 
-		attendance.Park(car1)
-		_, err := attendance.Park(car2)
+		attendance.Park(*car1)
+		_, err := attendance.Park(*car2)
 
 		assert.ErrorIs(t, expected, err)
 	})
 
 	t.Run("should return ErrCarHasBeenParked when car already in lot 2", func(t *testing.T) {
-		car1 := entity.Car{PlateNumber: "GOLANG"}
-		car2 := entity.Car{PlateNumber: "GOLANG"}
+		car1 := entity.NewCar("GOLANG")
+		car2 := entity.NewCar("GOLANG")
 		expected := constant.ErrCarHasBeenParked
 		var lots []*parking.Lot
 		parkingLot1 := parking.NewLot(2)
@@ -66,10 +66,10 @@ func TestAttendancePark(t *testing.T) {
 		lots = append(lots, parkingLot1)
 		lots = append(lots, parkingLot2)
 		attendance := parking.NewAttendance(lots, 2)
-		parkingLot2.Park(car1)
 
-		attendance.Park(car1)
-		_, err := attendance.Park(car2)
+		parkingLot2.Park(*car1)
+		attendance.Park(*car1)
+		_, err := attendance.Park(*car2)
 
 		assert.ErrorIs(t, expected, err)
 	})
@@ -77,21 +77,20 @@ func TestAttendancePark(t *testing.T) {
 
 func TestAttendanceUnpark(t *testing.T) {
 	t.Run("should return car when input ticket", func(t *testing.T) {
-		expectedCar := entity.Car{PlateNumber: "GOLANG"}
-
+		expectedCar := entity.NewCar("GOLANG")
 		var lots []*parking.Lot
 		parkingLot := parking.NewLot(2)
 		lots = append(lots, parkingLot)
 		attendance := parking.NewAttendance(lots, 2)
-		ticket, _ := attendance.Park(expectedCar)
 
+		ticket, _ := attendance.Park(*expectedCar)
 		car, _ := attendance.Unpark(ticket)
 
-		assert.Equal(t, expectedCar, car)
+		assert.Equal(t, expectedCar, &car)
 	})
 
 	t.Run("should return ErrUnrecognizedParkingTicket when input unrecognize ticket", func(t *testing.T) {
-		car1 := entity.Car{PlateNumber: "GOLANG"}
+		car1 := entity.NewCar("GOLANG")
 		ticket := entity.Ticket{ID: "1234"}
 		expected := constant.ErrUnrecognizedParkingTicket
 		var lots []*parking.Lot
@@ -99,21 +98,21 @@ func TestAttendanceUnpark(t *testing.T) {
 		lots = append(lots, parkingLot)
 		attendance := parking.NewAttendance(lots, 2)
 
-		attendance.Park(car1)
+		attendance.Park(*car1)
 		_, err := attendance.Unpark(ticket)
 
 		assert.ErrorIs(t, expected, err)
 	})
 
 	t.Run("should return ErrUnrecognizedParkingTicket when input 2 same ticket", func(t *testing.T) {
-		car1 := entity.Car{PlateNumber: "GOLANG"}
+		car1 := entity.NewCar("GOLANG")
 		expected := constant.ErrUnrecognizedParkingTicket
 		var lots []*parking.Lot
 		parkingLot := parking.NewLot(1)
 		lots = append(lots, parkingLot)
 		attendance := parking.NewAttendance(lots, 2)
-		ticket, _ := attendance.Park(car1)
 
+		ticket, _ := attendance.Park(*car1)
 		attendance.Unpark(ticket)
 		_, err := attendance.Unpark(ticket)
 
@@ -132,9 +131,9 @@ func TestChangeStyle(t *testing.T) {
 		lots = append(lots, parkingLot2)
 		lots = append(lots, parkingLot3)
 		attendance := parking.NewAttendance(lots, 3)
+
 		attendance.ChangeStyle(2)
 		ticket, _ := attendance.Park(*car1)
-
 		car, _ := parkingLot2.Unpark(ticket)
 
 		assert.Equal(t, car1, &car)
@@ -150,11 +149,11 @@ func TestChangeStyle(t *testing.T) {
 		lots = append(lots, parkingLot1)
 		lots = append(lots, parkingLot2)
 		attendance := parking.NewAttendance(lots, 2)
+
 		attendance.ChangeStyle(3)
 		attendance.Park(*car1)
 		attendance.Park(*car2)
 		ticket, _ := attendance.Park(*car3)
-
 		carUnpark, _ := parkingLot1.Unpark(ticket)
 
 		assert.Equal(t, car3, &carUnpark)

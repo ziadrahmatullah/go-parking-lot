@@ -28,13 +28,8 @@ func NewAttendance(lot []*Lot, cap int) *Attendance {
 	return newAttendance
 }
 
-func (a *Attendance) ChangeStyle(input int) {
-	switch input {
-	case HighestCapacityStyle:
-		a.parkStyle = HighestCapacityStyle
-	case HighestNumberOfFreeSpaceStyle:
-		a.parkStyle = HighestNumberOfFreeSpaceStyle
-	}
+func (a *Attendance) ChangeStyle(parkStyle int) {
+	a.parkStyle = parkStyle
 }
 
 func (a *Attendance) Park(car entity.Car) (ticket entity.Ticket, err error) {
@@ -73,7 +68,16 @@ func (a *Attendance) isCarAvailable(car entity.Car) bool {
 	return false
 }
 
-func (a *Attendance) NotifyFull(lot *Lot) {
+func (a *Attendance) Notify(lot *Lot, message string){
+	switch message{
+	case "full":
+		a.notifyFull(lot)
+	case "available":
+		a.notifyAvailable(lot)
+	}
+}
+
+func (a *Attendance) notifyFull(lot *Lot) {
 	for i, lt := range a.availableLot {
 		if lt == lot {
 			a.availableLot = deleteElement(a.availableLot, i)
@@ -82,7 +86,7 @@ func (a *Attendance) NotifyFull(lot *Lot) {
 	}
 }
 
-func (a *Attendance) NotifyAvailable(lot *Lot) {
+func (a *Attendance) notifyAvailable(lot *Lot) {
 	a.availableLot = append(a.availableLot, lot)
 }
 
@@ -102,5 +106,3 @@ func deleteElement(slice []*Lot, index int) []*Lot {
 	return append(slice[:index], slice[index+1:]...)
 }
 
-//TODO: Satuin Notify
-//TODO: Gunakan Iota
