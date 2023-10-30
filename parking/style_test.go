@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func Test(t *testing.T) {
+func TestImplementStyle(t *testing.T) {
 	t.Run("should do nothing when FirstAvailableStyle", func(t *testing.T) {
 		lot1 := parking.NewLot(1)
 		lot2 := parking.NewLot(2)
