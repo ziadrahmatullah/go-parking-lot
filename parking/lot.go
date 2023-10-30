@@ -72,18 +72,18 @@ func (l *Lot) isHigherCapacityThan(lot *Lot) bool{
 }
 
 func (l *Lot) isHigherSpaceThan(lot *Lot) bool{
-	return l.NumberOfFreeSpace() > lot.NumberOfFreeSpace()
+	return l.numberOfFreeSpace() > lot.numberOfFreeSpace()
 }
 
 func (l *Lot) Subscribe(s Subscriber) {
 	l.subscriberList = append(l.subscriberList, s)
 }
 
-func (l *Lot) NumberOfFreeSpace() int {
+func (l *Lot) numberOfFreeSpace() int {
 	return l.cap - len(l.field)
 }
 
-func (l *Lot) FieldStatus() map[entity.Ticket]entity.Car{
-	return l.field
+func (l *Lot) LotStatus() entity.LotStatus {
+	return entity.LotStatus{TicketCar: l.field, FreeSpace: l.numberOfFreeSpace()}
 }
 

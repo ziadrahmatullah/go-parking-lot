@@ -79,8 +79,11 @@ func (a *Attendance) notifyAvailable(lot *Lot) {
 	a.availableLot = append(a.availableLot, lot)
 }
 
-func (a *Attendance) LotStatus() []*Lot{
-	return a.lot
+func (a *Attendance) LotStatuses() (lotStatuses []entity.LotStatus){
+	for _, lt := range a.lot {
+		lotStatuses = append(lotStatuses, lt.LotStatus())
+	}
+	return
 }
 
 

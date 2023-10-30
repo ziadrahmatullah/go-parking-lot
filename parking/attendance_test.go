@@ -159,3 +159,16 @@ func TestChangeStyle(t *testing.T) {
 		assert.Equal(t, car3, &carUnpark)
 	})
 }
+
+func TestLotStatuses(t *testing.T) {
+	t.Run("should return not nil when call LotStatus", func(t *testing.T) {
+		var lots []*parking.Lot
+		lot := parking.NewLot(1)
+		lots = append(lots, lot)
+		attendance := parking.NewAttendance(lots)
+
+		lotStatuses := attendance.LotStatuses()
+
+		assert.NotNil(t, lotStatuses)
+	})
+}

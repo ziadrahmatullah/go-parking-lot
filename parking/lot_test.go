@@ -79,3 +79,14 @@ func TestUnpark(t *testing.T) {
 		assert.ErrorIs(t, expected, err)
 	})
 }
+
+func TestLotStatus(t *testing.T) {
+	t.Run("should return not nil when call LotStatus", func(t *testing.T) {
+		parkingLot := parking.NewLot(2)
+		
+		lotStatus:= parkingLot.LotStatus()
+
+		assert.NotNil(t, lotStatus)
+	})
+}
+

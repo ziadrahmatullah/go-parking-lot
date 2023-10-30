@@ -2,11 +2,13 @@ package main
 
 import (
 	"bufio"
+	"errors"
 	"fmt"
 	"os"
 	"strconv"
 	"strings"
 
+	"git.garena.com/sea-labs-id/batch-04/shared-projects/go-parking-lot/constant"
 	"git.garena.com/sea-labs-id/batch-04/shared-projects/go-parking-lot/entity"
 	"git.garena.com/sea-labs-id/batch-04/shared-projects/go-parking-lot/parking"
 )
@@ -17,63 +19,6 @@ func promptInput(scanner *bufio.Scanner, text string) string {
 	fmt.Print(text)
 	scanner.Scan()
 	return scanner.Text()
-}
-
-func Setup() {
-	scanner := bufio.NewScanner(os.Stdin)
-	var lots []*parking.Lot
-	fmt.Println(len(lots))
-	capacities := promptInput(scanner, "input parking lot capacities: ")
-	capLots := strings.Split(capacities, ",")
-	for _, cap := range capLots {
-		cap, _ := strconv.Atoi(cap)
-		lots = append(lots, parking.NewLot(cap))
-	}
-	attendance = *parking.NewAttendance(lots)
-}
-
-func Park() {
-	scanner := bufio.NewScanner(os.Stdin)
-	plateNumber := promptInput(scanner, "input plate number: ")
-	ticket, err := attendance.Park(*entity.NewCar(plateNumber))
-	if err != nil {
-		fmt.Println(err)
-	} else {
-		fmt.Printf("Car parked with ticket id %s\n", ticket.ID)
-	}
-}
-
-func Unpark() {
-	scanner := bufio.NewScanner(os.Stdin)
-	ticket := promptInput(scanner, "input ticket id: #")
-	car, err := attendance.Unpark(entity.Ticket{ID: ticket})
-	if err != nil {
-		switch err{
-
-		}
-		fmt.Println(err)
-	} else {
-		fmt.Printf("Car %s successfully unparked!\n", car.PlateNumber)
-	}
-}
-
-// Parking Lot Status:
-// Lot #1: 4 space left
-// #5678 B123M
-// #3456 B898M
-
-// Lot #2: 0 space left
-// #5678 B123M
-
-func ParkingLotStatus() {
-	fmt.Println("Parking Lot Status:")
-	for i, lt := range attendance.LotStatus() {
-		fmt.Printf("Lot #%d: %d space left\n", i+1, lt.NumberOfFreeSpace())
-		for ticket, car := range lt.FieldStatus(){
-			fmt.Printf("#%s %s\n", ticket.ID, car.PlateNumber)
-		}
-		fmt.Println()
-	}
 }
 
 func main() {
@@ -93,13 +38,51 @@ func main() {
 
 		switch input {
 		case "1":
-			Setup()
+			capacities := promptInput(scanner, "input parking lot capacities: ")
+			var lots []*parking.Lot
+			capLots := strings.Split(capacities, ",")
+			for _, cap := range capLots {
+				cap, _ := strconv.Atoi(cap)
+				lots = append(lots, parking.NewLot(cap))
+			}
+			attendance = *parking.NewAttendance(lots)
 		case "2":
-			Park()
+			plateNumber := promptInput(scanner, "input plate number: ")
+			ticket, err := attendance.Park(*entity.NewCar(plateNumber))
+			if err != nil {
+				switch{
+				case errors.Is(err, constant.ErrNoAvailablePosition):
+					fmt.Println("Parking lot is full!")
+				case errors.Is(err, constant.ErrCarHasBeenParked):
+					fmt.Println("Car is parked!")
+				default:
+					fmt.Printf("Unexpected error: %s\n", err)
+				}
+			} else {
+				fmt.Printf("Car parked with ticket id #%s\n", ticket.ID)
+			}
 		case "3":
-			Unpark()
+			ticket := promptInput(scanner, "input ticket id: #")
+			car, err := attendance.Unpark(entity.Ticket{ID: ticket})
+			if err != nil {
+				switch{
+				case errors.Is(err, constant.ErrUnrecognizedParkingTicket):
+					fmt.Printf("Unrecognize Ticket!")
+				default:
+					fmt.Printf("Unexpected error: %s\n", err)
+				}
+			} else {
+				fmt.Printf("Car %s successfully unparked!\n", car.PlateNumber)
+			}
 		case "4":
-			ParkingLotStatus()
+			fmt.Println("Parking Lot Status:")
+			for i, lt := range attendance.LotStatuses() {
+				fmt.Printf("Lot #%d: %d space left\n", i+1, lt.FreeSpace)
+				for ticket, car := range lt.TicketCar {
+					fmt.Printf("#%s %s\n", ticket.ID, car.PlateNumber)
+				}
+				fmt.Println()
+			}
 		case "5":
 			exit = true
 		default:
