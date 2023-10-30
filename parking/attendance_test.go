@@ -132,7 +132,7 @@ func TestChangeStyle(t *testing.T) {
 		lots = append(lots, parkingLot3)
 		attendance := parking.NewAttendance(lots)
 
-		attendance.ChangeStyle(2)
+		attendance.ChangeStyle(&parking.HighestCapacityStyle{})
 		ticket, _ := attendance.Park(*car1)
 		car, _ := parkingLot2.Unpark(ticket)
 
@@ -150,7 +150,7 @@ func TestChangeStyle(t *testing.T) {
 		lots = append(lots, parkingLot2)
 		attendance := parking.NewAttendance(lots)
 
-		attendance.ChangeStyle(3)
+		attendance.ChangeStyle(&parking.HighestNumberOfFreeSpaceStyle{})
 		attendance.Park(*car1)
 		attendance.Park(*car2)
 		ticket, _ := attendance.Park(*car3)

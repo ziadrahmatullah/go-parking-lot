@@ -1,33 +1,26 @@
 package parking
 
 import (
-	"sort"
-
 	"git.garena.com/sea-labs-id/batch-04/shared-projects/go-parking-lot/constant"
 	"git.garena.com/sea-labs-id/batch-04/shared-projects/go-parking-lot/entity"
 )
 
-const (
-	FirstAvailable int = iota + 1
-	HighestCapacityStyle
-	HighestNumberOfFreeSpaceStyle
-)
 
 type Attendance struct {
 	lot          []*Lot
 	availableLot []*Lot
-	parkStyle    int
+	parkStyle    ParkStyle
 }
 
 func NewAttendance(lot []*Lot) *Attendance {
-	newAttendance := &Attendance{lot, lot, 1}
+	newAttendance := &Attendance{lot, lot, &FirstAvailableStyle{}}
 	for _, lt := range lot {
 		lt.Subscribe(newAttendance)
 	}
 	return newAttendance
 }
 
-func (a *Attendance) ChangeStyle(parkStyle int) {
+func (a *Attendance) ChangeStyle(parkStyle ParkStyle) {
 	a.parkStyle = parkStyle
 }
 
@@ -40,11 +33,7 @@ func (a *Attendance) Park(car entity.Car) (ticket entity.Ticket, err error) {
 		err = constant.ErrCarHasBeenParked
 		return
 	}
-	if a.parkStyle == HighestCapacityStyle {
-		a.highestCapacityStyle()
-	} else if a.parkStyle == HighestNumberOfFreeSpaceStyle {
-		a.highestNumberOfFreeSpaceStyle()
-	}
+	a.parkStyle.ImplementStyle(a.availableLot) 	
 	return a.availableLot[0].Park(car)
 }
 
@@ -87,18 +76,6 @@ func (a *Attendance) notifyFull(lot *Lot) {
 
 func (a *Attendance) notifyAvailable(lot *Lot) {
 	a.availableLot = append(a.availableLot, lot)
-}
-
-func (a *Attendance) highestCapacityStyle() {
-	sort.Slice(a.availableLot, func(i, j int) bool {
-		return a.availableLot[i].isHigherCapacityThan(a.availableLot[j])
-	})
-}
-
-func (a *Attendance) highestNumberOfFreeSpaceStyle() {
-	sort.Slice(a.availableLot, func(i, j int) bool {
-		return a.availableLot[i].isHigherSpaceThan(a.availableLot[j])
-	})
 }
 
 func deleteElement(slice []*Lot, index int) []*Lot {

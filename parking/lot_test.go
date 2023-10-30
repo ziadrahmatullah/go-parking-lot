@@ -1,7 +1,6 @@
 package parking_test
 
 import (
-	"errors"
 	"testing"
 
 	"git.garena.com/sea-labs-id/batch-04/shared-projects/go-parking-lot/constant"
@@ -23,13 +22,13 @@ func TestPark(t *testing.T) {
 	t.Run("should return ErrNoAvailablePosition when parking lot full", func(t *testing.T) {
 		car1 := entity.NewCar("GOLANG")
 		car2 := entity.NewCar("RUBY")
-		expected := constant.ErrUnrecognizedParkingTicket
+		expected := constant.ErrNoAvailablePosition
 		parkingLot := parking.NewLot(1)
 
 		parkingLot.Park(*car1)
 		_, err := parkingLot.Park(*car2)
 
-		errors.Is(expected, err)
+		assert.ErrorIs(t, expected, err)
 	})
 
 	t.Run("should return ErrCarHasBeenParked when nput 2 same car", func(t *testing.T) {
@@ -41,7 +40,7 @@ func TestPark(t *testing.T) {
 		parkingLot.Park(*car1)
 		_, err := parkingLot.Park(*car2)
 
-		errors.Is(expected, err)
+		assert.ErrorIs(t, expected, err)
 	})
 }
 
@@ -65,7 +64,7 @@ func TestUnpark(t *testing.T) {
 		parkingLot.Park(*car1)
 		_, err := parkingLot.Unpark(ticket)
 
-		errors.Is(expected, err)
+		assert.ErrorIs(t, expected, err)
 	})
 
 	t.Run("should return ErrUnrecognizedParkingTicket when input 2 same ticket", func(t *testing.T) {
@@ -77,6 +76,6 @@ func TestUnpark(t *testing.T) {
 		parkingLot.Unpark(ticket)
 		_, err := parkingLot.Unpark(ticket)
 
-		errors.Is(expected, err)
+		assert.ErrorIs(t, expected, err)
 	})
 }
